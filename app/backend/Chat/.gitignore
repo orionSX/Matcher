@@ -1,0 +1,8 @@
+.vscode
+
+[Bb]in/
+[Oo]bj/
+.clang-format
+.idea
+*.nupkg
+*.snupkg
