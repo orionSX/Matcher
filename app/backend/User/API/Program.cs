@@ -25,10 +25,8 @@ builder.Services.AddScoped<IUserRepository<User>>(provider =>
 
 // ========== Services (Scoped) ==========!!!
 builder.Services
-    .AddScoped<IMessageService<ResponseMessageDTO, CreateMessageDTO, UpdateMessageDTO>,
-        MessageService>();
-builder.Services
-    .AddScoped<IChatService<ResponseChatDTO, CreateChatDTO, UpdateChatDTO>, ChatService>();
+    .AddScoped<IUserService<ResponseUserDTO, CreateUserDTO, UpdateUserDTO>,
+        UserService>();
 
 // ========== Controllers ==========
 builder.Services.AddControllers();

@@ -1,4 +1,3 @@
-using Domain.Values;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -6,7 +5,7 @@ namespace Infra.Entities;
 
 public record User
 {
-
+     
     [BsonId]
     [BsonRepresentation(BsonType.String)]
     public Guid Oid { get; set; }

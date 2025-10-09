@@ -36,7 +36,7 @@ public class User : Base
 
     public static User Update(User oldUser, string nickname, string email)
     {
-        var User = Create(oldUser.Oid, oldUser.createdAt, nickname, email);
+        var User = Create(oldUser.Oid, oldUser.CreatedAt, nickname, email);
         return User;
     }
 
