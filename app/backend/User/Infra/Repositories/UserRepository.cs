@@ -14,7 +14,7 @@ public class UserRepository : IUserRepository<UserEntity>
         _collection = database.GetCollection<UserEntity>("users");
     }
 
-    public async Task<UserEntity> GetbyIdAsync(Guid oid)
+    public async Task<UserEntity> GetByIdAsync(Guid oid)
     {
         var filter = Builders<UserEntity>.Filter.Eq(x => x.Oid, oid);
         var entity = await _collection.Find(filter).FirstOrDefaultAsync();
