@@ -1,6 +1,18 @@
 version: '3.9'
 
 services:
+  api:
+    build:
+      context: .
+      dockerfile: API/Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:5000
+    networks:
+      - backend
+    
   mongodb:
     image: mongo:8.0
     container_name: chat-mongodb  

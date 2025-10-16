@@ -11,7 +11,6 @@ public record ChatOwner
     public string Oid { get; set; } = Guid.Empty.ToString();
 
     [BsonElement("owner_type")]
-    [BsonRepresentation(BsonType.String)]
     public OwnerType Type { get; set; } = OwnerType.System;
 }
 
@@ -22,17 +21,14 @@ public record Chat
     public Guid Oid { get; set; }
 
     [BsonElement("created_at")]
-    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime CreatedAt { get; set; }
 
     [BsonElement("title")]
-    [BsonRepresentation(BsonType.String)]
     public string? Title { get; set; }
 
-    [BsonElement("owner")] public ChatOwner Owner { get; set; } = new();
-
+    [BsonElement("owner")]
+    public ChatOwner Owner { get; set; } = new();
 
     [BsonElement("type")]
-    [BsonRepresentation(BsonType.String)]
     public ChatType Type { get; set; }
 }
