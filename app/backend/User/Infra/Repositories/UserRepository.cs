@@ -1,59 +1,59 @@
 using Domain.Repositories;
 using Infra.Exceptions;
 using MongoDB.Driver;
-using UserEntity = Infra.Entities.User;
 
 namespace Infra.Repositories;
 
-public class UserRepository : IUserRepository<UserEntity>
+public class UserRepository<TEntity> : IUserRepository<TEntity>
 {
-    private readonly IMongoCollection<UserEntity> _collection;
+    private readonly IMongoCollection<TEntity> _collection;
 
-    public UserRepository(IMongoDatabase database)
+    public UserRepository(IMongoDatabase database, string collectionName)
     {
-        _collection = database.GetCollection<UserEntity>("users");
+        _collection = database.GetCollection<TEntity>(collectionName);
     }
 
-    public async Task<UserEntity> GetByIdAsync(Guid oid)
+    public async Task<TEntity> GetByIdAsync(Guid oid)
     {
-        var filter = Builders<UserEntity>.Filter.Eq(x => x.Oid, oid);
+        var filter = Builders<TEntity>.Filter.Eq("_id", oid);
         var entity = await _collection.Find(filter).FirstOrDefaultAsync();
-        if (entity == null) throw new InfraException("Not found");
+        if (entity == null) throw new InfraException($"{typeof(TEntity).Name} with id {oid} not found");
         return entity;
     }
 
-    public async Task<List<UserEntity>> GetAll()
+    public async Task<List<TEntity>> GetAllAsync()
     {
-        var filter = Builders<UserEntity>.Filter.Empty;
-
-        var sort = Builders<UserEntity>.Sort.Descending(x => x.CreatedAt);
+        var filter = Builders<TEntity>.Filter.Empty;
+        var sort = Builders<TEntity>.Sort.Descending("created_at");
         var entities = await _collection.Find(filter).Sort(sort).ToListAsync();
-        if (entities == null || entities.Count == 0) throw new InfraException("Not found");
+        if (entities == null || entities.Count == 0) throw new InfraException($"No {typeof(TEntity).Name} found");
         return entities;
     }
 
-    public async Task<UserEntity> CreateAsync(UserEntity entity)
+    public async Task<TEntity> CreateAsync(TEntity entity)
     {
-        // FROM TEMPLATE: TODO find a way to track if its inserted
         await _collection.InsertOneAsync(entity);
-
         return entity;
     }
 
-    public async Task UpdateAsync(UserEntity entity)
+    public async Task UpdateAsync(TEntity entity)
     {
-        var filter = Builders<UserEntity>.Filter.Eq(x => x.Oid, entity.Oid);
+        var oid = GetOid(entity);
+        var filter = Builders<TEntity>.Filter.Eq("_id", oid);
         var result = await _collection.ReplaceOneAsync(filter, entity);
-        if (result.ModifiedCount == 0) throw new InfraException("Not found");
+        if (result.ModifiedCount == 0) throw new InfraException($"{typeof(TEntity).Name} not found for update");
     }
-
 
     public async Task DeleteAsync(Guid oid)
     {
-        var filter = Builders<UserEntity>.Filter.Eq(x => x.Oid, oid);
+        var filter = Builders<TEntity>.Filter.Eq("_id", oid);
         var result = await _collection.DeleteOneAsync(filter);
-        if (result.DeletedCount == 0) throw new InfraException("Not found");
+        if (result.DeletedCount == 0) throw new InfraException($"{typeof(TEntity).Name} not found for deletion");
     }
 
-
+    private Guid GetOid(TEntity entity)
+    {
+        var property = typeof(TEntity).GetProperty("Oid");
+        return (Guid)property.GetValue(entity);
+    }
 }

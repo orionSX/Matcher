@@ -1,10 +1,10 @@
 namespace Domain.Repositories;
 
-public interface IUserRepository<TUser>
+public interface IUserRepository<TEntity>
 {
-    Task<TUser> GetByIdAsync(Guid oid);
-    Task<List<TUser>> GetAll();
-    Task<TUser> CreateAsync(TUser chat);
-    Task UpdateAsync(TUser chat);
+    Task<TEntity> GetByIdAsync(Guid oid);
+    Task<List<TEntity>> GetAllAsync();
+    Task<TEntity> CreateAsync(TEntity entity);
+    Task UpdateAsync(TEntity entity);
     Task DeleteAsync(Guid oid);
 }

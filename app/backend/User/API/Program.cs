@@ -4,11 +4,16 @@ using Domain.Repositories;
 using Infra;
 using Infra.Entities;
 using Infra.Repositories;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 
 var builder = WebApplication.CreateBuilder(args);
 
+BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
+BsonSerializer.RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String));
+
 // ========== MongoDB Configuration (Singleton) ==========
-// MongoClient использует внутренний пул соединений и является thread-safe
 builder.Services.AddSingleton<MongoService>(provider =>
 {
     var connectionString = builder.Configuration.GetConnectionString("MongoDB");
@@ -17,23 +22,32 @@ builder.Services.AddSingleton<MongoService>(provider =>
 });
 
 // ========== Repositories (Scoped) ==========
-builder.Services.AddScoped<IUserRepository<User>>(provider =>
+// Регистрируем универсальный репозиторий для UserEntity
+builder.Services.AddScoped<IUserRepository<UserEntity>>(provider =>
 {
     var mongoService = provider.GetRequiredService<MongoService>();
-    return new UserRepository(mongoService.Database);
+    return new UserRepository<UserEntity>(mongoService.Database, "users");
 });
 
-// ========== Services (Scoped) ==========!!!
-builder.Services
-    .AddScoped<IUserService<ResponseUserDTO, CreateUserDTO, UpdateUserDTO>,
-        UserService>();
+// ========== Services (Scoped) ==========
+// Теперь используем IUserService без дженериков
+builder.Services.AddScoped<IUserService, UserService>();
 
 // ========== Controllers ==========
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Для корректной работы с enum как строками в JSON
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
 
 // ========== Swagger/OpenAPI ==========
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApiDocument();
+builder.Services.AddOpenApiDocument(config =>
+{
+    config.Title = "User API";
+    config.Description = "API for managing users of different types";
+});
 
 var app = builder.Build();
 
@@ -47,4 +61,5 @@ if (app.Environment.IsDevelopment())
 app.UseRouting();
 app.MapControllers();
 
+app.Run();
 app.Run();
