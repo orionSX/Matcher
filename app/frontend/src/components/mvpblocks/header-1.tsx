@@ -3,20 +3,25 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronDown, Sparkles } from 'lucide-react';
-import{Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
+
 interface NavItem {
-  name: string;
+  nameKey: string;
   href: string;
   hasDropdown?: boolean;
   dropdownItems?: { name: string; href: string; description?: string }[];
 }
 
-const navItems: NavItem[] = [
-  { name: 'Home', href: '/' },
-  { name: 'Profile', href: '/profile' },
-];
-
 export default function Header1() {
+  const { t } = useTranslation();
+  
+  const navItems: NavItem[] = [
+    { nameKey: 'header.nav.home', href: '/' },
+    { nameKey: 'header.nav.matches', href: '/matches' },
+    { nameKey: 'header.nav.profile', href: '/profile' },
+  ];
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -86,19 +91,18 @@ export default function Header1() {
           <nav className="hidden items-center space-x-8 lg:flex">
             {navItems.map((item) => (
               <div
-                key={item.name}
+                key={item.nameKey}
                 className="relative"
                 onMouseEnter={() =>
-                  item.hasDropdown && setActiveDropdown(item.name)
+                  item.hasDropdown && setActiveDropdown(item.nameKey)
                 }
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 <Link
-                  
                   to={item.href}
                   className="text-foreground flex items-center space-x-1 font-medium transition-colors duration-200 hover:text-rose-500"
                 >
-                  <span>{item.name}</span>
+                  <span>{t(item.nameKey)}</span>
                   {item.hasDropdown && (
                     <ChevronDown className="h-4 w-4 transition-transform duration-200" />
                   )}
@@ -106,7 +110,7 @@ export default function Header1() {
 
                 {item.hasDropdown && (
                   <AnimatePresence>
-                    {activeDropdown === item.name && (
+                    {activeDropdown === item.nameKey && (
                       <motion.div
                         className="border-border bg-background/95 absolute top-full left-0 mt-2 w-64 overflow-hidden rounded-xl border shadow-xl backdrop-blur-lg"
                         variants={dropdownVariants}
@@ -117,7 +121,6 @@ export default function Header1() {
                       >
                         {item.dropdownItems?.map((dropdownItem) => (
                           <Link
-                           
                             key={dropdownItem.name}
                             to={dropdownItem.href}
                             className="hover:bg-muted block px-4 py-3 transition-colors duration-200"
@@ -141,11 +144,12 @@ export default function Header1() {
           </nav>
 
           <div className="hidden items-center space-x-4 lg:flex">
+            <LanguageSwitcher />
             <Link
               to="/profile"
               className="text-foreground font-medium transition-colors duration-200 hover:text-rose-500"
             >
-              Профиль
+              {t('common.profile')}
             </Link>
           </div>
 
@@ -175,22 +179,24 @@ export default function Header1() {
               <div className="border-border bg-background/95 mt-4 space-y-2 rounded-xl border py-4 shadow-xl backdrop-blur-lg">
                 {navItems.map((item) => (
                   <Link
-                    
-                    key={item.name}
+                    key={item.nameKey}
                     to={item.href}
                     className="text-foreground hover:bg-muted block px-4 py-3 font-medium transition-colors duration-200"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    {item.name}
+                    {t(item.nameKey)}
                   </Link>
                 ))}
                 <div className="space-y-2 px-4 py-2">
+                  <div className="mb-2">
+                    <LanguageSwitcher />
+                  </div>
                   <Link
                     to="/profile"
                     className="block w-full rounded-lg bg-gradient-to-r from-rose-500 to-rose-700 py-2.5 text-center font-medium text-white transition-all duration-200 hover:shadow-lg"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Профиль
+                    {t('common.profile')}
                   </Link>
                 </div>
               </div>

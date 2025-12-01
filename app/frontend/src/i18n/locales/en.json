@@ -1,0 +1,159 @@
+{
+  "common": {
+    "home": "Home",
+    "profile": "Profile",
+    "matches": "Matches",
+    "createMatch": "Create Match",
+    "search": "Search",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "back": "Back",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "contact": "Contact",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "header": {
+    "title": "AkioraGG",
+    "nav": {
+      "home": "Home",
+      "matches": "Matches",
+      "profile": "Profile"
+    }
+  },
+  "footer": {
+    "description": "Platform for finding teammates and friends in League of Legends. Create profiles, find players and climb the ranks together.",
+    "navigation": "Navigation",
+    "about": "About",
+    "support": "Support",
+    "aboutUs": "About Us",
+    "rules": "Rules",
+    "contacts": "Contacts",
+    "faq": "FAQ",
+    "help": "Help",
+    "community": "Community",
+    "reportBug": "Report Bug",
+    "privacy": "Privacy Policy",
+    "copyright": "© 2025 AkioraGG. All rights reserved."
+  },
+  "matches": {
+    "title": "Find Players",
+    "subtitle": "Find teammates and friends to play League of Legends with",
+    "createButton": "Create Profile",
+    "searchPlaceholder": "Search by name or description...",
+    "filters": {
+      "allServers": "All Servers",
+      "allRanks": "All Ranks",
+      "allRoles": "All Roles",
+      "allGoals": "All Goals"
+    },
+    "found": "Profiles found",
+    "notFound": {
+      "title": "No profiles found",
+      "description": "Try changing filters or create your own profile"
+    },
+    "card": {
+      "roles": "Roles",
+      "description": "Description",
+      "age": "Age",
+      "playTime": "Play Time",
+      "goal": "Goal"
+    }
+  },
+  "createMatch": {
+    "title": "Create Profile",
+    "subtitle": "Fill in your information to find teammates",
+    "backToMatches": "Back to Matches",
+    "form": {
+      "title": "Basic Information",
+      "subtitle": "Enter your gaming data",
+      "username": {
+        "label": "Username",
+        "placeholder": "Enter your in-game nickname",
+        "required": "Enter username"
+      },
+      "server": {
+        "label": "Server",
+        "placeholder": "Select server",
+        "required": "Select server"
+      },
+      "roles": {
+        "label": "Roles",
+        "required": "Select at least one role"
+      },
+      "rank": {
+        "label": "Rank",
+        "placeholder": "Select rank",
+        "required": "Select rank"
+      },
+      "goal": {
+        "label": "Goal",
+        "placeholder": "Select goal",
+        "required": "Select goal"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Tell us about yourself, playstyle, what you're looking for...",
+        "required": "Enter description"
+      },
+      "age": {
+        "label": "Age (optional)",
+        "placeholder": "Your age"
+      },
+      "playTime": {
+        "label": "Play Time (optional)",
+        "placeholder": "Select time"
+      },
+      "createButton": "Create Profile"
+    }
+  },
+  "servers": {
+    "EUW": "EUW",
+    "EUNE": "EUNE",
+    "NA": "NA",
+    "KR": "KR",
+    "BR": "BR",
+    "LAN": "LAN",
+    "LAS": "LAS",
+    "OCE": "OCE",
+    "RU": "RU",
+    "TR": "TR",
+    "JP": "JP"
+  },
+  "roles": {
+    "Top": "Top",
+    "Jungle": "Jungle",
+    "Mid": "Mid",
+    "ADC": "ADC",
+    "Support": "Support"
+  },
+  "ranks": {
+    "Iron": "Iron",
+    "Bronze": "Bronze",
+    "Silver": "Silver",
+    "Gold": "Gold",
+    "Platinum": "Platinum",
+    "Diamond": "Diamond",
+    "Master": "Master",
+    "Grandmaster": "Grandmaster",
+    "Challenger": "Challenger"
+  },
+  "goals": {
+    "Ranked": "Ranked",
+    "Normal": "Normal",
+    "Flex": "Flex",
+    "Clash": "Clash",
+    "Friends": "Friends"
+  },
+  "playTimes": {
+    "morning": "Morning (8:00-12:00)",
+    "day": "Day (12:00-18:00)",
+    "evening": "Evening (18:00-23:00)",
+    "night": "Night (23:00-8:00)",
+    "anytime": "Any time"
+  }
+}
+
