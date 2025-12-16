@@ -6,6 +6,7 @@ import { Menu, X, ChevronDown, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import NotificationBell from '@/components/mvpblocks/notification-bell';
 
 interface NavItem {
   nameKey: string;
@@ -20,6 +21,7 @@ export default function Header1() {
   const navItems: NavItem[] = [
     { nameKey: 'header.nav.home', href: '/' },
     { nameKey: 'header.nav.matches', href: '/matches' },
+    { nameKey: 'header.nav.chats', href: '/chats' },
     { nameKey: 'header.nav.profile', href: '/profile' },
   ];
   const [isScrolled, setIsScrolled] = useState(false);
@@ -144,6 +146,7 @@ export default function Header1() {
           </nav>
 
           <div className="hidden items-center space-x-4 lg:flex">
+            <NotificationBell />
             <LanguageSwitcher />
             <Link
               to="/profile"

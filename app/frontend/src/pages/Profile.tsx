@@ -3,6 +3,13 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import LinkAccountModal from '@/components/mvpblocks/link-account-modal'
+import EditProfileDialog from '@/components/mvpblocks/edit-profile-dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 type Role = "Top" | "Jungle" | "Mid" | "ADC" | "Support"
 
@@ -21,12 +28,23 @@ type LinkedAccount = {
   id: string
   region: string
   summonerName: string
-  role: Role
+  roles: Role[] // массив ролей
+  tag: string // тег как строка
   tier: RankedTier
   lp: number
   wins: number
   losses: number
   isPrimary?: boolean
+}
+
+type UserProfile = {
+  name: string
+  email: string
+  age: number | null
+  gender: 'male' | 'female' | 'other' | null
+  avatarUrl: string
+  bio: string
+  favoriteChampion: string
 }
 
 type SiteStats = {
@@ -44,20 +62,23 @@ type RecentAction = {
   createdAt: string
 }
 
-const user = {
+const initialUser: UserProfile = {
   name: "Akiora",
-  tag: "#EUW",
+  email: "akiora@example.com",
+  age: 24,
+  gender: "male",
   avatarUrl: "https://ui.shadcn.com/avatars/04.png",
   bio: "ADC main. Tempo over everything. Climbing to Challenger one reset at a time.",
   favoriteChampion: "Kai'Sa",
 }
 
-const linkedAccounts: LinkedAccount[] = [
+const initialLinkedAccounts: LinkedAccount[] = [
   {
     id: "1",
     region: "EUW",
     summonerName: "Akiora",
-    role: "ADC",
+    roles: ["ADC", "Mid"],
+    tag: "EUW1",
     tier: "Master",
     lp: 115,
     wins: 210,
@@ -68,7 +89,8 @@ const linkedAccounts: LinkedAccount[] = [
     id: "2",
     region: "EUNE",
     summonerName: "Akiora smurf",
-    role: "Mid",
+    roles: ["Mid", "Top"],
+    tag: "EUNE7",
     tier: "Diamond",
     lp: 60,
     wins: 95,
@@ -140,6 +162,33 @@ function tierColor(tier: RankedTier) {
 }
 
 export default function ProfilePage() {
+  const { t } = useTranslation()
+  const [user, setUser] = useState<UserProfile>(initialUser)
+  const [accounts, setAccounts] = useState<LinkedAccount[]>(initialLinkedAccounts)
+  const [telegram, setTelegram] = useState<string | null>(null)
+  const [discord, setDiscord] = useState<string | null>(null)
+  const [telegramOpen, setTelegramOpen] = useState(false)
+  const [discordOpen, setDiscordOpen] = useState(false)
+
+  function handleLinkLeague(data: { region: string; summonerName: string; tag: string; roles: Role[] }) {
+    const newAcc: LinkedAccount = {
+      id: String(Date.now()),
+      region: data.region,
+      summonerName: data.summonerName,
+      roles: data.roles,
+      tag: data.tag,
+      tier: "Iron",
+      lp: 0,
+      wins: 0,
+      losses: 0,
+    }
+    setAccounts((s) => [newAcc, ...s])
+  }
+
+  function handleEditProfile(data: { name: string; email: string; age: number | null; gender: 'male' | 'female' | 'other' | null }) {
+    setUser((prev) => ({ ...prev, ...data }))
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background/90 to-black text-foreground">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 pt-24 pb-10 lg:flex-row">
@@ -165,19 +214,21 @@ export default function ProfilePage() {
                     Live
                   </Badge>
                 </div>
-                <p className="text-xs text-muted-foreground">Профиль игрока League of Legends</p>
+                <p className="text-xs text-muted-foreground">{t('profile.title')}</p>
                 <p className="mt-1 text-sm text-muted-foreground">{user.bio}</p>
               </div>
               <div className="hidden flex-col items-end gap-2 sm:flex">
                 <p className="text-xs text-muted-foreground">Любимый чемпион</p>
                 <p className="text-sm font-medium text-rose-400">{user.favoriteChampion}</p>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="border-rose-900/50 bg-black/40 hover:bg-rose-950/50 hover:border-rose-800/50"
-                >
-                  Редактировать профиль
-                </Button>
+                <EditProfileDialog
+                  initialData={{
+                    name: user.name,
+                    email: user.email,
+                    age: user.age,
+                    gender: user.gender,
+                  }}
+                  onSubmit={handleEditProfile}
+                />
               </div>
             </CardHeader>
             <CardContent className="flex flex-col gap-4 pt-2">
@@ -186,19 +237,19 @@ export default function ProfilePage() {
                 <div className="rounded-lg border border-rose-900/50 bg-black/40 p-3">
                   <p className="text-xs text-muted-foreground">Всего матчей (ранкед)</p>
                   <p className="mt-1 text-lg font-semibold text-slate-50">
-                    {linkedAccounts[0].wins + linkedAccounts[0].losses}
+                    {accounts[0].wins + accounts[0].losses}
                   </p>
                   <p className="mt-1 text-xs text-rose-400">
-                    Winrate: {winrate(linkedAccounts[0])}
+                    Winrate: {winrate(accounts[0])}
                   </p>
                 </div>
                 <div className="rounded-lg border border-rose-900/50 bg-black/40 p-3">
                   <p className="text-xs text-muted-foreground">Текущий ранг</p>
                   <p className="mt-1 text-lg font-semibold">
-                    {linkedAccounts[0].tier} {linkedAccounts[0].lp} LP
+                    {accounts[0].tier} {accounts[0].lp} LP
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Основной аккаунт • {linkedAccounts[0].region}
+                    Основной аккаунт • {accounts[0].region}
                   </p>
                 </div>
                 <div className="rounded-lg border border-rose-900/50 bg-black/40 p-3">
@@ -218,19 +269,15 @@ export default function ProfilePage() {
             <CardHeader>
               <div className="flex items-center justify-between gap-2">
                 <CardTitle className="text-base font-semibold">
-                  Привязанные игровые аккаунты
+                  {t('profile.linkedAccounts')}
                 </CardTitle>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="border-dashed border-rose-500/60 bg-slate-900/80 hover:bg-slate-800 hover:border-rose-400"
-                >
-                  Привязать новый аккаунт
-                </Button>
+                <div>
+                  <LinkAccountModal onSubmit={handleLinkLeague} />
+                </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              {linkedAccounts.map((acc) => (
+              {accounts.map((acc) => (
                 <div
                   key={acc.id}
                   className={cn(
@@ -252,7 +299,7 @@ export default function ProfilePage() {
                         )}
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Роль: {acc.role} • {acc.region}
+                        Tag: #{acc.tag} • {acc.region}
                       </p>
                       <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                         <Badge
@@ -271,6 +318,14 @@ export default function ProfilePage() {
                         </span>
                         <Separator orientation="vertical" className="h-3 bg-slate-700" />
                         <span>WR {winrate(acc)}</span>
+                        <Separator orientation="vertical" className="h-3 bg-slate-700" />
+                        <div className="flex gap-1">
+                          {acc.roles.map((role) => (
+                            <Badge key={role} variant="secondary" className="text-[10px]">
+                              {role}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -298,6 +353,68 @@ export default function ProfilePage() {
 
         {/* Right column – site stats, recent activity, settings */}
         <div className="w-full space-y-6 lg:w-[320px]">
+          <Card className="border border-slate-800/80 bg-black/30 backdrop-blur">
+            <CardHeader>
+              <CardTitle className="text-base font-semibold">{t('profile.link.linkAccount')}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Telegram</p>
+                  <p className="text-xs text-muted-foreground">{telegram ?? t('profile.link.notLinked')}</p>
+                </div>
+                <div>
+                  <Dialog open={telegramOpen} onOpenChange={setTelegramOpen}>
+                    <DialogTrigger asChild>
+                      <Button size="sm" variant="outline">{telegram ? t('profile.link.linked') : t('profile.link.openLinkModal')}</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Link Telegram</DialogTitle>
+                        <DialogDescription className="text-xs text-muted-foreground">Provide your Telegram handle (without @)</DialogDescription>
+                      </DialogHeader>
+                      <div className="py-4">
+                        <Label>Telegram</Label>
+                        <Input placeholder="e.g. myhandle" onChange={(e) => setTelegram(e.target.value)} value={telegram ?? ''} />
+                      </div>
+                      <DialogFooter>
+                        <Button variant="ghost" onClick={() => setTelegramOpen(false)}>{t('common.cancel')}</Button>
+                        <Button onClick={() => setTelegramOpen(false)}>{t('common.save')}</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Discord</p>
+                  <p className="text-xs text-muted-foreground">{discord ?? t('profile.link.notLinked')}</p>
+                </div>
+                <div>
+                  <Dialog open={discordOpen} onOpenChange={setDiscordOpen}>
+                    <DialogTrigger asChild>
+                      <Button size="sm" variant="outline">{discord ? t('profile.link.linked') : t('profile.link.openLinkModal')}</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Link Discord</DialogTitle>
+                        <DialogDescription className="text-xs text-muted-foreground">Provide your Discord tag (e.g. name#1234)</DialogDescription>
+                      </DialogHeader>
+                      <div className="py-4">
+                        <Label>Discord</Label>
+                        <Input placeholder="e.g. name#1234" onChange={(e) => setDiscord(e.target.value)} value={discord ?? ''} />
+                      </div>
+                      <DialogFooter>
+                        <Button variant="ghost" onClick={() => setDiscordOpen(false)}>{t('common.cancel')}</Button>
+                        <Button onClick={() => setDiscordOpen(false)}>{t('common.save')}</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
           <Card className="border border-slate-800/80 bg-black/30 backdrop-blur">
             <CardHeader>
               <CardTitle className="text-base font-semibold">

@@ -21,7 +21,13 @@
     "nav": {
       "home": "Главная",
       "matches": "Анкеты",
-      "profile": "Профиль"
+      "profile": "Профиль",
+      "chats": "Чаты"
+    },
+    "notifications": {
+      "title": "Уведомления",
+      "markAllRead": "Отметить все как прочитанные",
+      "noNotifications": "Нет новых уведомлений"
     }
   },
   "footer": {
@@ -155,5 +161,105 @@
     "night": "Ночь (23:00-8:00)",
     "anytime": "Любое время"
   }
+  ,
+  "profile": {
+    "title": "Профиль",
+    "editProfile": "Редактировать профиль",
+    "linkedAccounts": "Привязанные аккаунты",
+    "accountSettings": "Настройки аккаунта",
+    "siteStats": "Статистика на сайте",
+    "recentActivity": "Последние действия",
+    "edit": {
+      "name": "Имя",
+      "email": "Email",
+      "age": "Возраст",
+      "gender": "Пол",
+      "male": "Мужской",
+      "female": "Женский",
+      "other": "Другой",
+      "modalTitle": "Редактировать профиль",
+      "modalSubmit": "Сохранить изменения"
+    },
+    "link": {
+      "linkAccount": "Привязать аккаунт",
+      "linkNewAccount": "Привязать новый аккаунт",
+      "league": "League of Legends",
+      "telegram": "Telegram",
+      "discord": "Discord",
+      "linked": "Привязано",
+      "notLinked": "Не привязано",
+      "openLinkModal": "Привязать",
+      "modalTitle": "Привязать аккаунт League",
+      "modalSubmit": "Привязать аккаунт",
+      "modalSummonerPlaceholder": "Введите никнейм",
+      "modalTagPlaceholder": "Введите тег (например #EUW1)",
+      "modalOpggPlaceholder": "Вставьте ссылку на профиль OP.GG",
+      "modalRegion": "Регион",
+      "modalRole": "Роли",
+      "modalTag": "Тег",
+      "manualTab": "Вручную",
+      "opggTab": "Ссылка OP.GG"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "С возвращением",
+      "subtitle": "Войдите в свой аккаунт",
+      "email": "Email",
+      "password": "Пароль",
+      "submit": "Войти",
+      "noAccount": "Нет аккаунта?",
+      "signUp": "Зарегистрироваться",
+      "forgotPassword": "Забыли пароль?"
+    },
+    "register": {
+      "title": "Создать аккаунт",
+      "subtitle": "Присоединяйтесь к сообществу",
+      "name": "Имя",
+      "email": "Email",
+      "password": "Пароль",
+      "confirmPassword": "Подтвердите пароль",
+      "submit": "Создать аккаунт",
+      "hasAccount": "Уже есть аккаунт?",
+      "signIn": "Войти"
+    }
+  },
+  "matchesFeed": {
+    "hotProfiles": "Горячие анкеты",
+    "hotSubtitle": "Свайпайте, чтобы найти идеального тиммейта",
+    "allProfiles": "Все анкеты",
+    "allSubtitle": "Просматривайте и фильтруйте все профили",
+    "like": "Нравится",
+    "pass": "Пропустить",
+    "noMoreProfiles": "Анкеты закончились",
+    "checkBackLater": "Загляните позже, чтобы найти новых игроков"
+  },
+  "chats": {
+    "title": "Чаты",
+    "subtitle": "Ваши разговоры",
+    "newChat": "Новый чат",
+    "noChats": "Пока нет чатов",
+    "noChatsSub": "Начните разговор с игроком",
+    "online": "В сети",
+    "offline": "Не в сети",
+    "lastSeen": "Был(а) в сети",
+    "typing": "печатает...",
+    "messageStatus": {
+      "sent": "Отправлено",
+      "delivered": "Доставлено",
+      "read": "Прочитано"
+    },
+    "typeMessage": "Напишите сообщение...",
+    "send": "Отправить",
+    "mute": "Выключить уведомления",
+    "unmute": "Включить уведомления",
+    "viewProfile": "Просмотр профиля",
+    "deleteChat": "Удалить чат",
+    "matchedProfile": "Ссылка на анкету",
+    "chatNotFound": "Чат не найден",
+    "minutesAgo": "{{count}}м назад",
+    "hoursAgo": "{{count}}ч назад",
+    "daysAgo": "{{count}}д назад",
+    "justNow": "Только что"
+  }
 }
-
