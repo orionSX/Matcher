@@ -10,16 +10,16 @@ import java.util.UUID;
 
 public interface HotP2PFormRepo extends MongoRepository<HotP2PForm,String> {
 
-    // findByCreatorId - поиск одного документа
+ 
     Optional<HotP2PForm> findByCreatorId(String creatorId);
 
-    // findAllByCreatorId - поиск всех документов по creatorId
+
     List<HotP2PForm> findAllByCreatorId(UUID creatorId);
 
-    // Или если creatorId хранится как String
-    List<HotP2PForm> findAllByCreatorId(String creatorId);
 
-    // Можно также использовать @Query для кастомных запросов
+    List<HotP2PForm> findAllByCreatorId(String creatorId);
+    List<HotP2PForm> findAllByCreatorIdOrderByCreatedAtAsc(String creatorId);
+    List<HotP2PForm> findAllByCreatorIdOrderByCreatedAtDesc(String creatorId);
     @Query("{ 'creatorId': ?0 }")
     List<HotP2PForm> findFormsByCreatorId(String creatorId);
 }
