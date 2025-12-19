@@ -1,0 +1,86 @@
+@API_HostAddress = http://localhost:5115
+
+### ==================== CHATS ====================
+
+### Создать новый чат
+POST {{API_HostAddress}}/api/chats
+Content-Type: application/json
+
+{
+  "title": "Мой первый чат",
+  "owner": {
+    "oid": "00000000-0000-0000-0000-000000000001",
+    "type": "Group"
+  },
+  "type": 1
+}
+
+###
+
+### Получить чат по ID (замените на реальный ID после создания)
+GET {{API_HostAddress}}/api/chats/00000000-0000-0000-0000-000000000001
+Accept: application/json
+
+###
+
+### Получить все чаты владельца
+GET {{API_HostAddress}}/api/chats/owner/00000000-0000-0000-0000-000000000001
+Accept: application/json
+
+###
+
+### Удалить чат
+DELETE {{API_HostAddress}}/api/chats/00000000-0000-0000-0000-000000000001
+
+###
+
+### ==================== MESSAGES ====================
+
+### Создать новое сообщение
+POST {{API_HostAddress}}/api/messages
+Content-Type: application/json
+
+{
+  "text": "Привет! Это тестовое сообщение",
+  "creatorId": "00000000-0000-0000-0000-000000000002",
+  "chatId": "00000000-0000-0000-0000-000000000001",
+  "ttl": null
+}
+
+###
+
+### Создать сообщение с TTL (самоуничтожающееся через 1 час)
+POST {{API_HostAddress}}/api/messages
+Content-Type: application/json
+
+{
+  "text": "Это сообщение исчезнет через час",
+  "creatorId": "00000000-0000-0000-0000-000000000002",
+  "chatId": "00000000-0000-0000-0000-000000000001",
+  "ttl": "01:00:00"
+}
+
+###
+
+### Получить сообщение по ID (замените на реальный ID после создания)
+GET {{API_HostAddress}}/api/messages/00000000-0000-0000-0000-000000000001
+Accept: application/json
+
+###
+
+### Получить все сообщения чата
+GET {{API_HostAddress}}/api/messages/chat/00000000-0000-0000-0000-000000000001
+Accept: application/json
+
+###
+
+### Получить все сообщения автора
+GET {{API_HostAddress}}/api/messages/author/00000000-0000-0000-0000-000000000002
+Accept: application/json
+
+###
+
+### Удалить сообщение
+DELETE {{API_HostAddress}}/api/messages/00000000-0000-0000-0000-000000000001
+
+###

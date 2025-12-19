@@ -1,3 +1,4 @@
+
 # Java
 /target/
 *.class
@@ -27,3 +28,9 @@ Thumbs.db
 # Others
 *.swp
 *.swo
+
+[Bb]in
+[Oo]bj
+.idea
+node_modules
+
