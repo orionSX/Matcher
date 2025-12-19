@@ -1,4 +1,36 @@
+
+# Java
+/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+
+# IDEs
+/.idea/
+*.iml
+*.ipr
+*.iws
+/.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Maven
+/logs/
+/.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+
+# Others
+*.swp
+*.swo
+
 [Bb]in
 [Oo]bj
 .idea
 node_modules
+
