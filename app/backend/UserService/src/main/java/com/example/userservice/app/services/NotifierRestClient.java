@@ -9,7 +9,7 @@ import java.util.Map;
 @Service
 public class NotifierRestClient {
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String notifierUrl = "http://notifier-service:8080/api/notifier-users";
+    private final String notifierUrl = "http://notification-service:5003/api/notifier-users";
 
     public void createUserInNotifier(String oid, String nickname) {
         Map<String, Object> userData = new HashMap<>();

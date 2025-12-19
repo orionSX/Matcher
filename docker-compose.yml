@@ -1,0 +1,160 @@
+version: '3.9'
+
+services:
+  # Database Services
+  mongodb:
+    image: mongo:8.0
+    container_name: akiora-mongodb  
+    ports:
+      - "27017:27017"
+    volumes:
+      - akiora_db_data:/data/db
+    networks:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongo-express:
+    image: mongo-express
+    container_name: akiora-mongo-express
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/
+    ports:
+      - "28081:8081"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - backend
+
+  # Backend Services
+  # chat-service:
+  #   build:
+  #     context: ./app/backend/Chat
+  #     dockerfile: API/Dockerfile
+  #   container_name: akiora-chat-service
+  #   ports:
+  #     - "5000:8080"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://0.0.0.0:8080
+  #     - ConnectionStrings__MongoDB=mongodb://mongodb:27017
+  #     - MongoDB__DatabaseName=chatdb
+  #   depends_on:
+  #     mongodb:
+  #       condition: service_healthy
+  #   networks:
+  #     - backend
+  #   restart: unless-stopped
+
+  # parser-service:
+  #   build:
+  #     context: ./app/backend/Parser
+  #     dockerfile: API/Dockerfile
+  #   container_name: akiora-parser-service
+  #   ports:
+  #     - "5001:8080"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://0.0.0.0:8080
+  #   networks:
+  #     - backend
+  #   restart: unless-stopped
+
+  user-service:
+    build:
+      context: ./app/backend/UserService
+      dockerfile: Dockerfile
+    container_name: akiora-user-service
+    ports:
+      - "5002:8080"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/users
+      - SERVER_PORT=8080
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: unless-stopped
+
+  notification-service:
+    build:
+      context: ./app/backend/NotificationService
+      dockerfile: Dockerfile
+    container_name: akiora-notification-service
+    ports:
+      - "5003:8080"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/notifierdb
+      - SERVER_PORT=8080
+      - SPRINGDOC_SWAGGER_UI_PATH=/swagger-ui.html
+      - SPRINGDOC_API_DOCS_PATH=/v3/api-docs
+      - TELEGRAM_BOT_TOKEN=7715541625:AAFkoVyrNhJj9_bb6mp8ri_k1B5TBFFAxK0
+      - TELEGRAM_BOT_USERNAME=@SpeechToTextVictoria_Bot
+      - SMTP_PORT=587
+      - SMTP_SERVER=smtp.gmail.com
+      - EMAIL_ADDRESS=akioralol@gmail.com
+      - EMAIL_PASSWORD=dbmm vkex blxh qwyy
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: unless-stopped
+
+  search-form-service:
+    build:
+      context: ./app/backend/SearchFormService
+      dockerfile: Dockerfile
+    container_name: akiora-search-form-service
+    ports:
+      - "5004:8080"
+    environment:
+      - SPRING_APPLICATION_NAME=SearchFormService
+      - SPRING_MONGODB_URI=mongodb://mongodb:27017/sfs
+      - SPRING_DATA_MONGODB_FIELD_NAMING_STRATEGY=org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy
+      - SPRING_JACKSON_PROPERTY_NAMING_STRATEGY=SNAKE_CASE
+      - NOTIFICATOR_URL=http://notification-service:8080
+      - SERVER_PORT=8080
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      notification-service:
+        condition: service_started
+    networks:
+      - backend
+    restart: unless-stopped
+
+  # Frontend Service
+  # frontend:
+  #   build:
+  #     context: ./app/frontend
+  #     dockerfile: Dockerfile
+  #   container_name: akiora-frontend
+  #   ports:
+  #     - "3000:80"
+  #   depends_on:
+     
+  #     - user-service
+  #     - notification-service
+  #     - search-form-service
+  #   networks:
+  #     - backend
+  #   restart: unless-stopped
+
+volumes:
+  akiora_db_data:
+    driver: local
+
+networks:
+  backend:
+    driver: bridge

@@ -19,7 +19,7 @@ public class NotificationService {
             @Value("${notificator.url:https://notificator:5000}") String notificatorUrl
     ) {
         this.webClient = WebClient.builder()
-                .baseUrl(notificatorUrl)
+                .baseUrl("http://notification-service:8080")
                 .build();
     }
 
