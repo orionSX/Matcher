@@ -18,6 +18,8 @@ import com.fasterxml.uuid.Generators;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 import java.time.Instant;
+import java.util.List;
+import java.util.ArrayList;
 
 
 
@@ -38,6 +40,10 @@ public class HotP2PForm {
     private String description;
     private Instant createdAt;    
     private Instant expiresAt;
+    @Builder.Default
+    private List<String> likedBy = new ArrayList<>();
+    @Builder.Default
+    private List<String> dislikedBy = new ArrayList<>();
     
     public static HotP2PForm Create(
             UUID creatorId, LeaguePreferences leaguePreferences, PersonPreferences personPreferences, String description, UserData userData
@@ -49,7 +55,18 @@ public class HotP2PForm {
         }
         Instant now = Instant.now();
         Instant exp = now.plus(30, ChronoUnit.MINUTES);
-        return new HotP2PForm(newId,creatorId, leaguePreferences,userData,personPreferences,description,now,exp);
+        return HotP2PForm.builder()
+                .id(newId)
+                .creatorId(creatorId)
+                .leaguePreferences(leaguePreferences)
+                .userData(userData)
+                .personPreferences(personPreferences)
+                .description(description)
+                .createdAt(now)
+                .expiresAt(exp)
+                .likedBy(new ArrayList<>())
+                .dislikedBy(new ArrayList<>())
+                .build();
     }
     public static HotP2PForm Create(
            CreateHotP2PForm createData
@@ -59,14 +76,18 @@ public class HotP2PForm {
         
         Instant now = Instant.now();
         Instant exp = now.plus(30, ChronoUnit.MINUTES);
-        return new HotP2PForm(newId,
-                UUID.fromString(createData.getCreatorId()),
-                createData.getLeaguePreferences(),
-                createData.getUserData(),
-                createData.getPersonPreferences(),
-                createData.getDescription(),
-                now,
-                exp);
+        return HotP2PForm.builder()
+                .id(newId)
+                .creatorId(UUID.fromString(createData.getCreatorId()))
+                .leaguePreferences(createData.getLeaguePreferences())
+                .userData(createData.getUserData())
+                .personPreferences(createData.getPersonPreferences())
+                .description(createData.getDescription())
+                .createdAt(now)
+                .expiresAt(exp)
+                .likedBy(new ArrayList<>())
+                .dislikedBy(new ArrayList<>())
+                .build();
     }
    
 }
