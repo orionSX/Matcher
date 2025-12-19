@@ -1,4 +1,10 @@
-﻿FROM openjdk:21
-COPY ./out/production/SearchFormService/ /tmp
-WORKDIR /tmp
-ENTRYPOINT ["java","SearchFormServiceApplication"]
+﻿FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
+WORKDIR /build
+COPY . .
+RUN mvn clean package -DskipTests
+
+FROM eclipse-temurin:21-jdk-alpine
+WORKDIR /app
+COPY --from=builder /build/target/search-form-service-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 5002
+ENTRYPOINT ["java", "-jar", "app.jar"]
