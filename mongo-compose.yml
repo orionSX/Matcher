@@ -1,0 +1,36 @@
+version: '3.9'
+
+services: 
+    
+  mongodb:
+    image: mongo:8.0
+    container_name: sfs-mongodb  
+    ports:
+      - "27017:27017"
+    volumes:
+      - akiora_db_data:/data/db
+    networks:
+      - backend
+    
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/
+    ports:
+      - "28081:8081"
+    depends_on:
+      - mongodb
+    networks:
+      - backend
+volumes:
+  akiora_db_data:
+
+networks:
+  backend:
+    driver: bridge
