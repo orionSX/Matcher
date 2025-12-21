@@ -5,6 +5,7 @@ import com.akiora.searchformservice.App.DTO.HotP2PForm.Request.UpdateHotP2PForm;
 import com.akiora.searchformservice.Domain.Entities.HotP2PForm;
 import com.akiora.searchformservice.Domain.Exceptions.DomainException;
 import com.akiora.searchformservice.Infra.HotP2PFormRepo;
+import com.akiora.searchformservice.Shared.FormMatchedEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,10 @@ public class HotP2PFormService {
     @Autowired
     HotP2PFormRepo repo;
     
+   
+    
     @Autowired
-    NotificationService notificationService;
+    FormEventProducer formEventProducer;
     
     public HotP2PForm Create(CreateHotP2PForm form) throws DomainException {
         
@@ -62,34 +65,29 @@ public class HotP2PFormService {
         
         HotP2PForm form = formOpt.get();
         
-        // Проверяем, не лайкал ли уже пользователь
+  
         if (form.getLikedBy().contains(userId)) {
             return Optional.of(form);
         }
         
-        // Убираем из дизлайков если был там
+ 
         form.getDislikedBy().remove(userId);
         
-        // Добавляем в лайки
+     
         form.getLikedBy().add(userId);
         
-        // Проверяем взаимный лайк (match)
+    
         String creatorId = form.getCreatorId().toString();
-        if (form.getLikedBy().contains(creatorId) && !userId.equals(creatorId)) {
-            // Проверяем, лайкнул ли создатель формы этого пользователя
-            List<HotP2PForm> userForms = repo.findAllByCreatorId(userId);
-            for (HotP2PForm userForm : userForms) {
-                if (userForm.getLikedBy().contains(creatorId)) {
-                    // Есть взаимный лайк - отправляем уведомление
-                    log.info("Match detected between {} and {}", userId, creatorId);
-                    notificationService.sendMatchNotification(userId, creatorId, formId);
-                    break;
-                }
-            }
-        }
         
-        repo.save(form);
-        return Optional.of(form);
+        
+        HotP2PForm updatedForm = repo.save(form);
+        FormMatchedEvent formMatchedEvent= FormMatchedEvent.builder()
+                .formId(formId)
+                .formCreator(creatorId)
+                .likeSender(userId)                
+                .build();
+        formEventProducer.sendFormMatchedEvent(formMatchedEvent);
+        return Optional.of(updatedForm);
     }
     
     public Optional<HotP2PForm> DislikeForm(String formId, String userId) throws DomainException {
@@ -100,15 +98,14 @@ public class HotP2PFormService {
         
         HotP2PForm form = formOpt.get();
         
-        // Проверяем, не дизлайкал ли уже пользователь
+
         if (form.getDislikedBy().contains(userId)) {
             return Optional.of(form);
         }
         
-        // Убираем из лайков если был там
+      
         form.getLikedBy().remove(userId);
-        
-        // Добавляем в дизлайки
+
         form.getDislikedBy().add(userId);
         
         repo.save(form);

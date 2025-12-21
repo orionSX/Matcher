@@ -8,5 +8,5 @@ FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
 # Указываем корректный путь и используем wildcard
 COPY --from=builder /build/target/*.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar", "--server.port=8080"]
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

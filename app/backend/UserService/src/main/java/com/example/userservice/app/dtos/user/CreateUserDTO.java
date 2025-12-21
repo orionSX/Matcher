@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.Map;
 
+
+
 public class CreateUserDTO {
     @NotBlank
     private String nickname;

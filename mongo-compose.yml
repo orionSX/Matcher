@@ -1,7 +1,17 @@
 version: '3.9'
 
 services: 
-    
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - backend
+ 
   mongodb:
     image: mongo:8.0
     container_name: sfs-mongodb  
@@ -30,6 +40,7 @@ services:
       - backend
 volumes:
   akiora_db_data:
+  rabbitmq_data:
 
 networks:
   backend:

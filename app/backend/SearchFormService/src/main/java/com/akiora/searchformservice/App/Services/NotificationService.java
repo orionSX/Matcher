@@ -16,18 +16,18 @@ public class NotificationService {
     private final WebClient webClient;
 
     public NotificationService(
-            @Value("${notificator.url:https://notificator:5000}") String notificatorUrl
+            @Value("${notificator.url}") String notificatorUrl
     ) {
         this.webClient = WebClient.builder()
-                .baseUrl("http://notification-service:8080")
+                .baseUrl(notificatorUrl)
                 .build();
     }
 
-    public void sendMatchNotification(String userId1, String userId2, String formId) {
+    public void sendMatchNotification(String sender, String receiver, String formId) {
         Map<String, String> payload = new HashMap<>();
         payload.put("message", "произошел мэтч");
-        payload.put("userId1", userId1);
-        payload.put("userId2", userId2);
+        payload.put("userId1", sender);
+        payload.put("userId2", receiver);
         payload.put("formId", formId);
 
         webClient.post()

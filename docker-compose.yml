@@ -75,10 +75,10 @@ services:
       dockerfile: Dockerfile
     container_name: akiora-user-service
     ports:
-      - "5002:8080"
+      - "5002:5002"
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/users
-      - SERVER_PORT=8080
+      - SERVER_PORT=5002
     depends_on:
       mongodb:
         condition: service_healthy
@@ -92,10 +92,10 @@ services:
       dockerfile: Dockerfile
     container_name: akiora-notification-service
     ports:
-      - "5003:8080"
+      - "5003:5003"
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/notifierdb
-      - SERVER_PORT=8080
+      - SERVER_PORT=5003
       - SPRINGDOC_SWAGGER_UI_PATH=/swagger-ui.html
       - SPRINGDOC_API_DOCS_PATH=/v3/api-docs
       - TELEGRAM_BOT_TOKEN=7715541625:AAFkoVyrNhJj9_bb6mp8ri_k1B5TBFFAxK0
@@ -117,14 +117,14 @@ services:
       dockerfile: Dockerfile
     container_name: akiora-search-form-service
     ports:
-      - "5004:8080"
+      - "5004:5004"
     environment:
       - SPRING_APPLICATION_NAME=SearchFormService
       - SPRING_MONGODB_URI=mongodb://mongodb:27017/sfs
       - SPRING_DATA_MONGODB_FIELD_NAMING_STRATEGY=org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy
       - SPRING_JACKSON_PROPERTY_NAMING_STRATEGY=SNAKE_CASE
-      - NOTIFICATOR_URL=http://notification-service:8080
-      - SERVER_PORT=8080
+      - NOTIFICATOR_URL=http://notification-service:5003
+      - SERVER_PORT=5004
     depends_on:
       mongodb:
         condition: service_healthy

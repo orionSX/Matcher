@@ -27,6 +27,7 @@ public class NotificationController {
         Notification notification = sendNotificationService.sendNotificationByEvent(request);
         return ResponseEntity.ok(notificationMapper.toDto(notification));
     }
+    
 
     @GetMapping("/status/{status}")
     public ResponseEntity<List<NotificationResponseDTO>> getNotificationsByStatus(@PathVariable Notification.NotificationStatus status) {

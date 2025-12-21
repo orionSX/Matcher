@@ -6,15 +6,13 @@ import com.akiora.searchformservice.App.DTO.HotP2PForm.Request.DislikeFormReques
 import com.akiora.searchformservice.App.DTO.HotP2PForm.Request.LikeFormRequest;
 import com.akiora.searchformservice.App.DTO.HotP2PForm.Request.UpdateHotP2PForm;
 import com.akiora.searchformservice.App.Services.HotP2PFormService;
+import com.akiora.searchformservice.App.Services.FormEventProducer;
 import com.akiora.searchformservice.Domain.Entities.HotP2PForm;
 import com.akiora.searchformservice.Domain.Exceptions.DomainException;
-import com.akiora.searchformservice.Infra.HotP2PFormRepo;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +23,8 @@ public class HotP2PFormController {
     
     @Autowired
     HotP2PFormService service;
+    @Autowired
+    FormEventProducer rabbitMQProducer;
     
     @PostMapping
     public ResponseEntity<?> addForm(@Valid @RequestBody CreateHotP2PForm form) {
@@ -47,7 +47,12 @@ public class HotP2PFormController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    
+
+    @GetMapping("/mesage")
+    public ResponseEntity<String> postMessageINtoRabbit(@RequestParam String message) {
+        rabbitMQProducer.sendMessage(message);
+        return ResponseEntity.ok("Message sent");
+    }
     @GetMapping("/{form_id}")
     public ResponseEntity<?> getFormById(@PathVariable("form_id") String formId) {
         var form = service.FindById(formId);
