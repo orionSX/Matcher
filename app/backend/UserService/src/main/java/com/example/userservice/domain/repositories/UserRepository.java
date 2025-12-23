@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface UserRepository extends MongoRepository<BaseUser, UUID> {
     List<BaseUser> findByType(UserType type);
     Optional<BaseUser> findByOid(UUID oid);
+    Optional<BaseUser> findByEmail(String email);
 }

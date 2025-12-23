@@ -28,16 +28,16 @@ public class FormMatchConsumer {
         logger.info("Received message: " + message);
 
         try {
-            // Парсим сообщение
+          
             var fme = mapper.readValue(message, FormMatchedEvent.class);
             logger.info("Parsed FormMatchedEvent - Creator:" +fme.getFormCreator()+" Liker: "+
                     fme.getLikeSender());
 
-            // Синхронный вызов для получения NotificationEvent
+      
             var ne = userServiceClient.getNotificationEvent(fme.getFormCreator(), fme.getLikeSender());
             logger.info("Created NotificationEvent: "+ ne);
 
-            // Синхронный вызов для отправки уведомления
+       
             String notificationResponse = notificationServiceClient.notifyUser(ne);
             logger.info("Notification service response: " + notificationResponse);
 

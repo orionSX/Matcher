@@ -8,7 +8,11 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.lang.invoke.VarHandle;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceClient {
@@ -33,8 +37,34 @@ public class UserServiceClient {
             
             UserDTO sender = getUserDataSync(senderId);
             UserDTO receiver = getUserDataSync(receiverId);
-
-            String message = "User " + sender.getNickname() + " liked your form!";
+            StringBuilder st= new StringBuilder("email: "+sender.getEmail());
+            st.append(", ");
+            if (sender.getAge()!=null && sender.getAge()>=12) {
+                st.append("age: ");
+                st.append(sender.getAge().toString());
+                st.append(" ");
+            }
+            List<String> socialsList=new ArrayList<>();
+            if (sender.getSocials() != null) {
+                socialsList = sender.getSocials().entrySet().stream()
+                        .map(entry -> entry.getKey() + ": " + entry.getValue().url()+" ")
+                        .filter(s -> !s.toLowerCase().contains("additional"))
+                        .collect(Collectors.toList());
+            }
+            st.append("socials: ");
+            if(socialsList.isEmpty()) {
+                st.append("none ");
+            }
+            for (String social : socialsList) {
+                if(!social.toLowerCase().contains("additional")) {
+                    
+                    st.append(social);
+                    
+                }
+                
+            
+            }
+            String message = "User " + sender.getNickname()+"( "+st+")" + " liked your form!";
 
             return NotifyEvent.builder()
                     .user_id(receiverId)

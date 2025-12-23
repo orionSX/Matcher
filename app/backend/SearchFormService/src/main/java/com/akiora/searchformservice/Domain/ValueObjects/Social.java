@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Socials {
-    String telegram;
-    String discord;
-    String vk;
+public class Social {
+    String platform;
+    String url;
+
 }

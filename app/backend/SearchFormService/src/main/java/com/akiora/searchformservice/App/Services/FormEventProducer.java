@@ -1,6 +1,8 @@
 package com.akiora.searchformservice.App.Services;
 
+import com.akiora.searchformservice.Events.AccountParseEvent;
 import com.akiora.searchformservice.Events.FormMatchedEvent;
+import com.akiora.searchformservice.Events.UserDataFetchEvent;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +39,21 @@ public class FormEventProducer {
         rabbitTemplate.convertAndSend(exchangeName,"log.form.matched", event);
      
     }
+    
+    public void sendAccountParseEvent(AccountParseEvent accountParseEvent) {
+        String event = mapper.writeValueAsString(accountParseEvent);
+        logger.info("Sending account parse event to Rabbit: " + event);
+        
+        rabbitTemplate.convertAndSend(exchangeName, "form.account", event);
+    }
+    
+    public void sendUserDataFetchEvent(UserDataFetchEvent userDataFetchEvent) {
+        String event = mapper.writeValueAsString(userDataFetchEvent);
+        logger.info("Sending user data fetch event to Rabbit: " + event);
+        
+        rabbitTemplate.convertAndSend(exchangeName, "form.user", event);
+    }
+    
     public void sendMessage(String message) {
       
         rabbitTemplate.convertAndSend(exchangeName, "form.created.queue", message);

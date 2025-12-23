@@ -1,9 +1,7 @@
 
 package com.example.userservice.api.controllers;
 
-import com.example.userservice.app.dtos.user.CreateUserDTO;
-import com.example.userservice.app.dtos.user.ResponseUserDTO;
-import com.example.userservice.app.dtos.user.UpdateUserDTO;
+import com.example.userservice.app.dtos.user.*;
 import com.example.userservice.app.services.IUserService;
 import com.example.userservice.domain.models.UserType;
 import jakarta.validation.Valid;
@@ -62,5 +60,35 @@ public class UsersController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(user.getEmail());
+    }
+
+    @PatchMapping("/nickname")
+    public ResponseEntity<ResponseUserDTO> updateNickname(@Valid @RequestBody UpdateNicknameDTO dto) {
+        return ResponseEntity.ok(userService.updateNickname(dto.getUserId(), dto.getNickname()));
+    }
+
+    @PatchMapping("/email")
+    public ResponseEntity<ResponseUserDTO> updateEmail(@Valid @RequestBody UpdateEmailDTO dto) {
+        return ResponseEntity.ok(userService.updateEmail(dto.getUserId(), dto.getEmail()));
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<ResponseUserDTO> updatePassword(@Valid @RequestBody UpdatePasswordDTO dto) {
+        return ResponseEntity.ok(userService.updatePassword(dto.getUserId(), dto.getPassword()));
+    }
+
+    @PatchMapping("/gender")
+    public ResponseEntity<ResponseUserDTO> updateGender(@Valid @RequestBody UpdateGenderDTO dto) {
+        return ResponseEntity.ok(userService.updateGender(dto.getUserId(), dto.getGender()));
+    }
+
+    @PatchMapping("/age")
+    public ResponseEntity<ResponseUserDTO> updateAge(@Valid @RequestBody UpdateAgeDTO dto) {
+        return ResponseEntity.ok(userService.updateAge(dto.getUserId(), dto.getAge()));
+    }
+
+    @PatchMapping("/socials")
+    public ResponseEntity<ResponseUserDTO> updateSocials(@Valid @RequestBody UpdateSocialsDTO dto) {
+        return ResponseEntity.ok(userService.updateSocials(dto.getUserId(), dto.getSocials()));
     }
 }

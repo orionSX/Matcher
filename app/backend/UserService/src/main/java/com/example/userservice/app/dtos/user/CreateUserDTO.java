@@ -17,6 +17,7 @@ public class CreateUserDTO {
     @NotBlank
     @Email
     private String email;
+    private String password;
     @NotNull
     private UserType type;
     @NotBlank
@@ -44,6 +45,14 @@ public class CreateUserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public UserType getType() {

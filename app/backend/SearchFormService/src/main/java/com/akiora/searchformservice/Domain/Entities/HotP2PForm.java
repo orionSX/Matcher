@@ -1,6 +1,8 @@
 package com.akiora.searchformservice.Domain.Entities;
 import com.akiora.searchformservice.App.DTO.HotP2PForm.Request.CreateHotP2PForm;
 import com.akiora.searchformservice.Domain.Exceptions.DomainException;
+import com.akiora.searchformservice.Domain.ValueObjects.AccountInfo;
+import com.akiora.searchformservice.Domain.ValueObjects.LeagueAccount;
 import com.akiora.searchformservice.Domain.ValueObjects.LeaguePreferences;
 import com.akiora.searchformservice.Domain.ValueObjects.PersonPreferences;
 
@@ -34,6 +36,8 @@ public class HotP2PForm {
     private UUID id;
     @Field(targetType = FieldType.STRING)
     private UUID creatorId;
+    private LeagueAccount account;
+    private AccountInfo accountInfo;
     private LeaguePreferences leaguePreferences;
     private UserData userData;
     private PersonPreferences personPreferences;   
@@ -46,10 +50,13 @@ public class HotP2PForm {
     private List<String> dislikedBy = new ArrayList<>();
     
     public static HotP2PForm Create(
-            UUID creatorId, LeaguePreferences leaguePreferences, PersonPreferences personPreferences, String description, UserData userData
+            UUID creatorId, LeagueAccount account, LeaguePreferences leaguePreferences, PersonPreferences personPreferences, String description, UserData userData
     ) throws DomainException {
         
         UUID newId = Generators.timeBasedEpochGenerator().generate();
+        if (account == null || account.getNickname() == null || account.getServer() == null || account.getTag() == null) {
+            throw new DomainException("Account information is required");
+        }
         if (!LeaguePreferences.isValid(leaguePreferences) || !PersonPreferences.isValid(personPreferences)) {
             throw new DomainException("invalid input");
         }
@@ -58,6 +65,8 @@ public class HotP2PForm {
         return HotP2PForm.builder()
                 .id(newId)
                 .creatorId(creatorId)
+                .account(account)
+                .accountInfo(null)
                 .leaguePreferences(leaguePreferences)
                 .userData(userData)
                 .personPreferences(personPreferences)
@@ -74,11 +83,18 @@ public class HotP2PForm {
 
         UUID newId = Generators.timeBasedEpochGenerator().generate();
         
+        if (createData.getAccount() == null || createData.getAccount().getNickname() == null || 
+            createData.getAccount().getServer() == null || createData.getAccount().getTag() == null) {
+            throw new DomainException("Account information is required");
+        }
+        
         Instant now = Instant.now();
         Instant exp = now.plus(30, ChronoUnit.MINUTES);
         return HotP2PForm.builder()
                 .id(newId)
                 .creatorId(UUID.fromString(createData.getCreatorId()))
+                .account(createData.getAccount())
+                .accountInfo(null)
                 .leaguePreferences(createData.getLeaguePreferences())
                 .userData(createData.getUserData())
                 .personPreferences(createData.getPersonPreferences())

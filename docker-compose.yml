@@ -145,6 +145,7 @@ services:
     container_name: akiora-form-consumer    
     environment:
       - APP_NAME=FormConsumer
+      - FORM_SERVICE_URL=http://search-form-service:5004
       - USER_SERVICE_URL=http://user-service:5002
       - NOTIFICATION_SERVICE_URL=http://notification-service:5003
       - SPRING_JACKSON_PROPERTY_NAMING_STRATEGY=SNAKE_CASE   
@@ -160,6 +161,28 @@ services:
       - backend
     restart: unless-stopped
 
+  parser:
+    build:
+        context: ./app/backend/lolparser
+        dockerfile: Dockerfile
+    container_name: parser 
+    environment:
+    - APP_NAME=parser
+    - FORM_SERVICE_URL=http://search-form-service:5004
+    - USER_SERVICE_URL=http://user-service:5002
+    - NOTIFICATION_SERVICE_URL=http://notification-service:5003
+    - SPRING_JACKSON_PROPERTY_NAMING_STRATEGY=SNAKE_CASE   
+    - RABBIT_PORT=5672
+    - RABBIT_HOST=rabbitmq
+    - RABBIT_USER=guest
+    - RABBIT_PASS=guest
+
+    depends_on:
+    - rabbitmq       
+    
+    networks:
+    - backend
+    restart: unless-stopped
   rabbitmq:
     image: rabbitmq:3.13-management-alpine
     container_name: rabbitmq

@@ -18,11 +18,12 @@ public class UserMapper {
         LocalDateTime createdAt = LocalDateTime.now();
 
         Integer age = dto.getAge() != null ? dto.getAge() : 0;
+        String password = dto.getPassword() != null ? dto.getPassword() : "";
 
         return switch (dto.getType()) {
-            case DEFAULT -> DefaultUser.create(oid, createdAt, dto.getNickname(), dto.getEmail(), dto.getType(), dto.getGender(), age, dto.getSocials());
-            case PLAYER -> PlayerUser.create(oid, createdAt, dto.getNickname(), dto.getEmail(), dto.getType(), dto.getGender(), age, dto.getSocials(), dto.getAccounts(), dto.getRoles());
-            case MEDIA -> MediaUser.create(oid, createdAt, dto.getNickname(), dto.getEmail(), dto.getType(), dto.getGender(), age, dto.getSocials(), dto.getMediaLinks());
+            case DEFAULT -> DefaultUser.create(oid, createdAt, dto.getNickname(), dto.getEmail(), password, dto.getType(), dto.getGender(), age, dto.getSocials());
+            case PLAYER -> PlayerUser.create(oid, createdAt, dto.getNickname(), dto.getEmail(), password, dto.getType(), dto.getGender(), age, dto.getSocials(), dto.getAccounts(), dto.getRoles());
+            case MEDIA -> MediaUser.create(oid, createdAt, dto.getNickname(), dto.getEmail(), password, dto.getType(), dto.getGender(), age, dto.getSocials(), dto.getMediaLinks());
         };
     }
 
@@ -52,6 +53,7 @@ public class UserMapper {
                     (DefaultUser) existingUser,
                     dto.getNickname() != null ? dto.getNickname() : existingUser.getNickname(),
                     dto.getEmail() != null ? dto.getEmail() : existingUser.getEmail(),
+                    dto.getPassword() != null ? dto.getPassword() : existingUser.getPassword(),
                     dto.getType() != null ? dto.getType() : existingUser.getType(),
                     dto.getGender() != null ? dto.getGender() : existingUser.getGender(),
                     dto.getAge() != null ? dto.getAge() : existingUser.getAge(),
@@ -61,6 +63,7 @@ public class UserMapper {
                     (PlayerUser) existingUser,
                     dto.getNickname() != null ? dto.getNickname() : existingUser.getNickname(),
                     dto.getEmail() != null ? dto.getEmail() : existingUser.getEmail(),
+                    dto.getPassword() != null ? dto.getPassword() : existingUser.getPassword(),
                     dto.getType() != null ? dto.getType() : existingUser.getType(),
                     dto.getGender() != null ? dto.getGender() : existingUser.getGender(),
                     dto.getAge() != null ? dto.getAge() : existingUser.getAge(),
@@ -72,6 +75,7 @@ public class UserMapper {
                     (MediaUser) existingUser,
                     dto.getNickname() != null ? dto.getNickname() : existingUser.getNickname(),
                     dto.getEmail() != null ? dto.getEmail() : existingUser.getEmail(),
+                    dto.getPassword() != null ? dto.getPassword() : existingUser.getPassword(),
                     dto.getType() != null ? dto.getType() : existingUser.getType(),
                     dto.getGender() != null ? dto.getGender() : existingUser.getGender(),
                     dto.getAge() != null ? dto.getAge() : existingUser.getAge(),

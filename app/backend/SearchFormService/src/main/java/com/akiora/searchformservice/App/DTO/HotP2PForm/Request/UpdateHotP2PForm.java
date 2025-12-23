@@ -1,5 +1,6 @@
 package com.akiora.searchformservice.App.DTO.HotP2PForm.Request;
 
+import com.akiora.searchformservice.Domain.ValueObjects.LeagueAccount;
 import com.akiora.searchformservice.Domain.ValueObjects.LeaguePreferences;
 import com.akiora.searchformservice.Domain.ValueObjects.PersonPreferences;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,6 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateHotP2PForm {
+    
+    @Valid
+    @Schema(name = "account")
+    private LeagueAccount account;
     
     @Size(min = 5, max = 500)
     @Schema(name = "description")

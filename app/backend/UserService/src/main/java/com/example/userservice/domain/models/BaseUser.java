@@ -19,12 +19,13 @@ public abstract class BaseUser {
     protected LocalDateTime createdAt;
     protected String nickname;
     protected String email;
+    protected String password;
     protected UserType type;
     protected String gender;
     protected Integer age;
     protected Map<String, Social> socials;
 
-    protected BaseUser(UUID oid, LocalDateTime createdAt, String nickname, String email, UserType type, String gender, Integer age, Map<String, Social> socials) {
+    protected BaseUser(UUID oid, LocalDateTime createdAt, String nickname, String email, String password, UserType type, String gender, Integer age, Map<String, Social> socials) {
         if (nickname == null || nickname.trim().isEmpty()) {
             throw new DomainException("Nickname cannot be empty or whitespace");
         }
@@ -32,6 +33,7 @@ public abstract class BaseUser {
         this.createdAt = createdAt;
         this.nickname = nickname;
         this.email = email;
+        this.password = password;
         this.type = type;
         this.gender = gender;
         this.age = age;
@@ -52,6 +54,10 @@ public abstract class BaseUser {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public UserType getType() {
