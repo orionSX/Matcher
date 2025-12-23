@@ -1,25 +1,45 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { authAPI } from '@/lib/api'
+import { useAuth } from '@/lib/auth-context'
+import { a } from 'node_modules/framer-motion/dist/types.d-DagZKalS'
 
 export default function Login() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { login,isAuthenticated } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(()=>{
+    if(isAuthenticated){
+        navigate('/profile')
+    }
+  },[] );
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Dummy login - в реальном приложении здесь будет API вызов
-    console.log('Login:', { email, password })
-    navigate('/profile')
+    setIsLoading(true)
+    
+    try {
+      const user = await authAPI.login({ email, password })
+      login(user)
+      toast.success('Успешный вход!')
+      navigate('/matches')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Ошибка входа')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -90,9 +110,17 @@ export default function Login() {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-semibold"
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-semibold disabled:opacity-50"
               >
-                {t('auth.login.submit')}
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Вход...
+                  </>
+                ) : (
+                  t('auth.login.submit')
+                )}
               </Button>
             </form>
           </CardContent>

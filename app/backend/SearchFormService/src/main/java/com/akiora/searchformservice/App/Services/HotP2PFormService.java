@@ -81,6 +81,10 @@ public class HotP2PFormService {
         return repo.findAllByOrderByCreatedAtDesc();
     }
     
+    public List<HotP2PForm> FindAvailableForUser(String userId) {
+        return repo.findAvailableFormsForUser(userId);
+    }
+    
     public Optional<HotP2PForm> LikeForm(String formId, String userId) throws DomainException {
         var formOpt = FindById(formId);
         if (formOpt.isEmpty()) {

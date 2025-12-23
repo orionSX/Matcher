@@ -21,8 +21,8 @@ export default function Header1() {
   const navItems: NavItem[] = [
     { nameKey: 'header.nav.home', href: '/' },
     { nameKey: 'header.nav.matches', href: '/matches' },
-    { nameKey: 'header.nav.chats', href: '/chats' },
-    { nameKey: 'header.nav.profile', href: '/profile' },
+    // { nameKey: 'header.nav.chats', href: '/chats' },
+    // { nameKey: 'header.nav.profile', href: '/profile' },
   ];
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -146,8 +146,8 @@ export default function Header1() {
           </nav>
 
           <div className="hidden items-center space-x-4 lg:flex">
-            <NotificationBell />
-            <LanguageSwitcher />
+            {/* <NotificationBell /> */}
+            {/* <LanguageSwitcher /> */}
             <Link
               to="/profile"
               className="text-foreground font-medium transition-colors duration-200 hover:text-rose-500"

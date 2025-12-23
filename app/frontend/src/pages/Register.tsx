@@ -2,33 +2,53 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { authAPI } from '@/lib/api'
+import { useAuth } from '@/lib/auth-context'
 
 export default function Register() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
-    name: '',
+    nickname: '',
     email: '',
     password: '',
     confirmPassword: '',
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match')
+      toast.error('Пароли не совпадают')
       return
     }
-    // Dummy registration - в реальном приложении здесь будет API вызов
-    console.log('Register:', formData)
-    navigate('/profile')
+    
+    setIsLoading(true)
+    
+    try {
+      const user = await authAPI.register({
+        nickname: formData.nickname,
+        email: formData.email,
+        password: formData.password,
+      })
+      login(user)
+      toast.success('Регистрация успешна!')
+      navigate('/matches')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Ошибка регистрации')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleChange = (field: string, value: string) => {
@@ -56,15 +76,15 @@ export default function Register() {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-rose-50">
+                <Label htmlFor="nickname" className="text-rose-50">
                   {t('auth.register.name')}
                 </Label>
                 <Input
-                  id="name"
+                  id="nickname"
                   type="text"
                   placeholder="John Doe"
-                  value={formData.name}
-                  onChange={(e) => handleChange('name', e.target.value)}
+                  value={formData.nickname}
+                  onChange={(e) => handleChange('nickname', e.target.value)}
                   required
                   className="border-rose-900/50 bg-black/40 text-rose-50 placeholder:text-muted-foreground focus-visible:border-rose-500 focus-visible:ring-rose-500/50"
                 />
@@ -133,9 +153,17 @@ export default function Register() {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-semibold"
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-semibold disabled:opacity-50"
               >
-                {t('auth.register.submit')}
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Регистрация...
+                  </>
+                ) : (
+                  t('auth.register.submit')
+                )}
               </Button>
             </form>
           </CardContent>

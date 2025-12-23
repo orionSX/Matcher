@@ -33,4 +33,7 @@ public interface HotP2PFormRepo extends MongoRepository<HotP2PForm,String> {
     
     @Query("{ 'dislikedBy': ?0 }")
     List<HotP2PForm> findAllByDislikedByContaining(String userId);
+    
+    @Query("{ 'creatorId': { $ne: ?0 }, 'likedBy': { $nin: [?0] }, 'dislikedBy': { $nin: [?0] } }")
+    List<HotP2PForm> findAvailableFormsForUser(String userId);
 }

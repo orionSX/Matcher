@@ -1,31 +1,21 @@
-# Build stage
-FROM node:20-alpine AS builder
 
-WORKDIR /app
+# Use an official Node.js runtime as a parent image
+FROM node:20-alpine
 
-# Copy package files
-COPY package.json package-lock.json* ./
+# Set the working directory to /usr/src/app
+WORKDIR /usr/src/app
 
-# Install dependencies
-RUN npm ci
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
 
-# Copy source code
+# Install application dependencies
+RUN npm install
+
+# Copy the rest of the application code
 COPY . .
 
-# Build application
-RUN npm run build
+# Expose the port your app runs on (e.g., 3000 for many dev servers)
+EXPOSE 5173
 
-# Production stage
-FROM nginx:alpine
-
-# Copy custom nginx config (optional)
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Copy built assets from builder
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Expose port
-EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Define the command to run your app in development mode
+CMD ["npm", "run", "dev"]

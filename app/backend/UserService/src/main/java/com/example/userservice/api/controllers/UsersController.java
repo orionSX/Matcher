@@ -62,33 +62,45 @@ public class UsersController {
         return ResponseEntity.ok(user.getEmail());
     }
 
-    @PatchMapping("/nickname")
-    public ResponseEntity<ResponseUserDTO> updateNickname(@Valid @RequestBody UpdateNicknameDTO dto) {
-        return ResponseEntity.ok(userService.updateNickname(dto.getUserId(), dto.getNickname()));
+    @PatchMapping("/{userId}/nickname")
+    public ResponseEntity<ResponseUserDTO> updateNickname(
+            @PathVariable UUID userId,
+            @Valid @RequestBody UpdateNicknameDTO dto) {
+        return ResponseEntity.ok(userService.updateNickname(userId, dto.getNickname()));
     }
 
-    @PatchMapping("/email")
-    public ResponseEntity<ResponseUserDTO> updateEmail(@Valid @RequestBody UpdateEmailDTO dto) {
-        return ResponseEntity.ok(userService.updateEmail(dto.getUserId(), dto.getEmail()));
+    @PatchMapping("/{userId}/email")
+    public ResponseEntity<ResponseUserDTO> updateEmail(
+            @PathVariable UUID userId,
+            @Valid @RequestBody UpdateEmailDTO dto) {
+        return ResponseEntity.ok(userService.updateEmail(userId, dto.getEmail()));
     }
 
-    @PatchMapping("/password")
-    public ResponseEntity<ResponseUserDTO> updatePassword(@Valid @RequestBody UpdatePasswordDTO dto) {
-        return ResponseEntity.ok(userService.updatePassword(dto.getUserId(), dto.getPassword()));
+    @PatchMapping("/{userId}/password")
+    public ResponseEntity<ResponseUserDTO> updatePassword(
+            @PathVariable UUID userId,
+            @Valid @RequestBody UpdatePasswordDTO dto) {
+        return ResponseEntity.ok(userService.updatePassword(userId, dto.getPassword()));
     }
 
-    @PatchMapping("/gender")
-    public ResponseEntity<ResponseUserDTO> updateGender(@Valid @RequestBody UpdateGenderDTO dto) {
-        return ResponseEntity.ok(userService.updateGender(dto.getUserId(), dto.getGender()));
+    @PatchMapping("/{userId}/gender")
+    public ResponseEntity<ResponseUserDTO> updateGender(
+            @PathVariable UUID userId,
+            @Valid @RequestBody UpdateGenderDTO dto) {
+        return ResponseEntity.ok(userService.updateGender(userId, dto.getGender()));
     }
 
-    @PatchMapping("/age")
-    public ResponseEntity<ResponseUserDTO> updateAge(@Valid @RequestBody UpdateAgeDTO dto) {
-        return ResponseEntity.ok(userService.updateAge(dto.getUserId(), dto.getAge()));
+    @PatchMapping("/{userId}/age")
+    public ResponseEntity<ResponseUserDTO> updateAge(
+            @PathVariable UUID userId,
+            @Valid @RequestBody UpdateAgeDTO dto) {
+        return ResponseEntity.ok(userService.updateAge(userId, dto.getAge()));
     }
 
-    @PatchMapping("/socials")
-    public ResponseEntity<ResponseUserDTO> updateSocials(@Valid @RequestBody UpdateSocialsDTO dto) {
-        return ResponseEntity.ok(userService.updateSocials(dto.getUserId(), dto.getSocials()));
+    @PatchMapping("/{userId}/socials")
+    public ResponseEntity<ResponseUserDTO> updateSocials(
+            @PathVariable UUID userId,
+            @Valid @RequestBody UpdateSocialsDTO dto) {
+        return ResponseEntity.ok(userService.updateSocials(userId, dto.getSocials()));
     }
 }

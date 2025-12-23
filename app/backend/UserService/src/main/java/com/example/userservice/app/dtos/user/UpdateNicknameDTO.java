@@ -1,28 +1,16 @@
 package com.example.userservice.app.dtos.user;
 
-import jakarta.validation.constraints.NotNull;
-import java.util.UUID;
+import jakarta.validation.constraints.NotBlank;
 
 public class UpdateNicknameDTO {
-    @NotNull(message = "User ID is required")
-    private UUID userId;
-
+    @NotBlank(message = "Nickname is required")
     private String nickname;
 
     public UpdateNicknameDTO() {
     }
 
-    public UpdateNicknameDTO(UUID userId, String nickname) {
-        this.userId = userId;
+    public UpdateNicknameDTO(String nickname) {
         this.nickname = nickname;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
     }
 
     public String getNickname() {

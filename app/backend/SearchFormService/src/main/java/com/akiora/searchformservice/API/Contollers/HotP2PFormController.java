@@ -70,8 +70,13 @@ public class HotP2PFormController {
     }
     
     @GetMapping
-    public ResponseEntity<List<HotP2PForm>> getAllForms() {
-        var forms = service.FindAll();
+    public ResponseEntity<List<HotP2PForm>> getAllForms(@RequestParam(required = false) String userId) {
+        List<HotP2PForm> forms;
+        if (userId != null && !userId.isEmpty()) {
+            forms = service.FindAvailableForUser(userId);
+        } else {
+            forms = service.FindAll();
+        }
         return new ResponseEntity<>(forms, HttpStatus.OK);
     }
     
