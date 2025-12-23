@@ -80,8 +80,7 @@ services:
       - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/users
       - SERVER_PORT=5002
     depends_on:
-      mongodb:
-        condition: service_healthy
+      - mongodb 
     networks:
       - backend
     restart: unless-stopped
@@ -94,6 +93,8 @@ services:
     ports:
       - "5003:5003"
     environment:
+      - USER_SERVICE_URL=http://user-service:5002
+      - NOTIFICATION_SERVICE_URL=http://notification-service:5003
       - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/notifierdb
       - SERVER_PORT=5003
       - SPRINGDOC_SWAGGER_UI_PATH=/swagger-ui.html
@@ -105,8 +106,7 @@ services:
       - EMAIL_ADDRESS=akioralol@gmail.com
       - EMAIL_PASSWORD=dbmm vkex blxh qwyy
     depends_on:
-      mongodb:
-        condition: service_healthy
+      - mongodb
     networks:
       - backend
     restart: unless-stopped
@@ -119,21 +119,57 @@ services:
     ports:
       - "5004:5004"
     environment:
-      - SPRING_APPLICATION_NAME=SearchFormService
-      - SPRING_MONGODB_URI=mongodb://mongodb:27017/sfs
+      - APP_NAME=SearchFormService
+      - MONGO_URI=mongodb://mongodb:27017/sfs
       - SPRING_DATA_MONGODB_FIELD_NAMING_STRATEGY=org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy
-      - SPRING_JACKSON_PROPERTY_NAMING_STRATEGY=SNAKE_CASE
-      - NOTIFICATOR_URL=http://notification-service:5003
+      - SPRING_JACKSON_PROPERTY_NAMING_STRATEGY=SNAKE_CASE   
       - SERVER_PORT=5004
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_USER=guest
+      - RABBIT_PASS=guest
+      - RABBIT_PORT=5672
+  
     depends_on:
-      mongodb:
-        condition: service_healthy
-      notification-service:
-        condition: service_started
+      - mongodb
+      - rabbitmq
+      
     networks:
       - backend
     restart: unless-stopped
 
+
+  form-consumer:
+    build:
+        context: ./app/backend/formconsumer
+        dockerfile: Dockerfile
+    container_name: akiora-form-consumer    
+    environment:
+      - APP_NAME=FormConsumer
+      - USER_SERVICE_URL=http://user-service:5002
+      - NOTIFICATION_SERVICE_URL=http://notification-service:5003
+      - SPRING_JACKSON_PROPERTY_NAMING_STRATEGY=SNAKE_CASE   
+      - RABBIT_PORT=5672
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_USER=guest
+      - RABBIT_PASS=guest
+
+    depends_on:
+      - rabbitmq       
+      
+    networks:
+      - backend
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - backend
   # Frontend Service
   # frontend:
   #   build:
@@ -153,6 +189,8 @@ services:
 
 volumes:
   akiora_db_data:
+    driver: local
+  rabbitmq_data:
     driver: local
 
 networks:

@@ -1,4 +1,4 @@
-package com.akiora.searchformservice.Shared;
+package com.akiora.formconsumer.Shared;
 
 
 import lombok.AllArgsConstructor;

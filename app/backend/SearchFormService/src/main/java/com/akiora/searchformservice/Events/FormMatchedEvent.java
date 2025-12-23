@@ -1,4 +1,4 @@
-package com.akiora.searchformservice.Shared;
+package com.akiora.searchformservice.Events;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

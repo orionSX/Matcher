@@ -11,7 +11,8 @@ import java.util.*;
 public class UserServiceRestClient {
     @Value("${user.service.url:http://user-service-java:8080}")
     private String userServiceUrl;
-
+    @Value("${notification.service.url}")
+    private String notificationServiceUrl;
     private final RestTemplate restTemplate = new RestTemplate();
 
     public List<Map<String, Object>> getAllUsers() {
@@ -21,18 +22,18 @@ public class UserServiceRestClient {
     }
 
     public void createUserInNotifier(Map<String, Object> user) {
-        String url = "http://notifier-service:8080/api/notifier-users";
+        String url = notificationServiceUrl +"/api/notifier-users";
         restTemplate.postForEntity(url, user, Void.class);
     }
 
     public void updateTelegramChatId(String userId, String telegramChatId) {
-        String url = "http://notifier-service:8080/api/notifier-users/" + userId + "/telegram";
+        String url =notificationServiceUrl+ "/api/notifier-users/" + userId + "/telegram";
         Map<String, String> body = new HashMap<>();
         body.put("telegramChatId", telegramChatId);
         restTemplate.put(url, body);
     }
     public void disableTelegramNotifications(String userId) {
-        String url = "http://notifier-service:8080/api/notifier-users/" + userId + "/telegram-disable";
+        String url =notificationServiceUrl+ "/api/notifier-users/" + userId + "/telegram-disable";
         restTemplate.put(url, null);
     }
 }

@@ -1,6 +1,6 @@
 package com.akiora.searchformservice.App.Services;
 
-import com.akiora.searchformservice.Shared.FormMatchedEvent;
+import com.akiora.searchformservice.Events.FormMatchedEvent;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,8 +32,9 @@ public class FormEventProducer {
       
         String event = mapper.writeValueAsString(formMatchedEvent);
         logger.info("Sending form matched event to Rabbit" + event);
-        logger.info(exchangeName);
+       
         rabbitTemplate.convertAndSend(exchangeName,"form.matched", event);
+        rabbitTemplate.convertAndSend(exchangeName,"log.form.matched", event);
      
     }
     public void sendMessage(String message) {

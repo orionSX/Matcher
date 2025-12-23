@@ -5,7 +5,7 @@ import com.akiora.searchformservice.App.DTO.HotP2PForm.Request.UpdateHotP2PForm;
 import com.akiora.searchformservice.Domain.Entities.HotP2PForm;
 import com.akiora.searchformservice.Domain.Exceptions.DomainException;
 import com.akiora.searchformservice.Infra.HotP2PFormRepo;
-import com.akiora.searchformservice.Shared.FormMatchedEvent;
+import com.akiora.searchformservice.Events.FormMatchedEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
