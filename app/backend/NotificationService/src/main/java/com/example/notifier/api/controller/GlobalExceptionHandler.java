@@ -1,7 +1,7 @@
-package com.example.userservice.api.controllers;
+package com.example.notifier.api.controller;
 
-import com.example.userservice.domain.exceptions.DomainException;
-import com.example.userservice.infra.exceptions.InfraException;
+import com.example.notifier.domain.exceptions.DomainException;
+import com.example.notifier.infra.exceptions.InfraException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

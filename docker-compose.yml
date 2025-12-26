@@ -79,8 +79,15 @@ services:
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/users
       - SERVER_PORT=5002
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_USER=guest
+      - RABBIT_PASS=guest
+      - RABBIT_PORT=5672
     depends_on:
-      - mongodb 
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
       - backend
     restart: unless-stopped
@@ -105,8 +112,15 @@ services:
       - SMTP_SERVER=smtp.gmail.com
       - EMAIL_ADDRESS=akioralol@gmail.com
       - EMAIL_PASSWORD=dbmm vkex blxh qwyy
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_USER=guest
+      - RABBIT_PASS=guest
+      - RABBIT_PORT=5672
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
       - backend
     restart: unless-stopped
@@ -193,6 +207,11 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
       - backend
+    healthcheck:
+      test: rabbitmq-diagnostics ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   frontend:
     build:

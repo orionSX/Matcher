@@ -159,9 +159,13 @@ export default function ProfilePageNew() {
         setTelegramSubscribed(false);
         toast.success('Отписка от Telegram уведомлений');
       } else {
-        await notificationAPI.subscribeTelegram(authUser.userId);
-        setTelegramSubscribed(true);
-        toast.success('Подписка на Telegram уведомления');
+        // При подписке запрашиваем Telegram Chat ID
+        const telegramChatId = prompt('Введите ваш Telegram Chat ID:');
+        if (telegramChatId) {
+          await notificationAPI.subscribeTelegram(authUser.userId, telegramChatId);
+          setTelegramSubscribed(true);
+          toast.success('Подписка на Telegram уведомления');
+        }
       }
     } catch (error) {
       toast.error('Ошибка управления подпиской');

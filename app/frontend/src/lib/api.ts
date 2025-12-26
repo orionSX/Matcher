@@ -295,29 +295,33 @@ export const formsAPI = {
 
 // Notification API
 export const notificationAPI = {
-  async subscribeTelegram(userId: string): Promise<void> {
-    const response = await fetch(`${NOTIFICATION_SERVICE_URL}/notifier-users/${userId}/telegram`, {
+  async subscribeTelegram(userId: string, telegramChatId: string): Promise<void> {
+    const response = await fetch(`${USER_SERVICE_URL}/users/${userId}/notification/telegram`, {
       method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ telegramChatId }),
     });
     if (!response.ok) throw new Error('Failed to subscribe to Telegram notifications');
   },
 
   async unsubscribeTelegram(userId: string): Promise<void> {
-    const response = await fetch(`${NOTIFICATION_SERVICE_URL}/notifier-users/${userId}/telegram-disable`, {
+    const response = await fetch(`${USER_SERVICE_URL}/users/${userId}/notification/telegram-disable`, {
       method: 'PUT',
     });
     if (!response.ok) throw new Error('Failed to unsubscribe from Telegram notifications');
   },
 
   async subscribeEmail(userId: string): Promise<void> {
-    const response = await fetch(`${NOTIFICATION_SERVICE_URL}/notifier-users/${userId}/email`, {
+    const response = await fetch(`${USER_SERVICE_URL}/users/${userId}/notification/email`, {
       method: 'PUT',
     });
     if (!response.ok) throw new Error('Failed to subscribe to Email notifications');
   },
 
   async unsubscribeEmail(userId: string): Promise<void> {
-    const response = await fetch(`${NOTIFICATION_SERVICE_URL}/notifier-users/${userId}/email-disable`, {
+    const response = await fetch(`${USER_SERVICE_URL}/users/${userId}/notification/email-disable`, {
       method: 'PUT',
     });
     if (!response.ok) throw new Error('Failed to unsubscribe from Email notifications');

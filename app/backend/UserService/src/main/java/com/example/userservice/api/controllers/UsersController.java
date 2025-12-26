@@ -2,7 +2,10 @@
 package com.example.userservice.api.controllers;
 
 import com.example.userservice.app.dtos.user.*;
+import com.example.userservice.app.dtos.notification.CreateUserNotificationDTO;
+import com.example.userservice.app.dtos.notification.UpdateUserNotificationDTO;
 import com.example.userservice.app.services.IUserService;
+import com.example.userservice.app.services.NotificationProducer;
 import com.example.userservice.domain.models.UserType;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -10,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -17,9 +21,11 @@ import java.util.UUID;
 public class UsersController {
 
     private final IUserService userService;
+    private final NotificationProducer notificationProducer;
 
-    public UsersController(IUserService userService) {
+    public UsersController(IUserService userService, NotificationProducer notificationProducer) {
         this.userService = userService;
+        this.notificationProducer = notificationProducer;
     }
 
     @GetMapping
@@ -39,7 +45,12 @@ public class UsersController {
 
     @PostMapping
     public ResponseEntity<ResponseUserDTO> createUser(@Valid @RequestBody CreateUserDTO dto) {
-        return new ResponseEntity<>(userService.createUser(dto), HttpStatus.CREATED);
+        ResponseUserDTO user = userService.createUser(dto);
+        // Отправить уведомление в очередь о создании пользователя
+        notificationProducer.sendCreateUserNotification(
+            new CreateUserNotificationDTO(user.getOid().toString(), user.getNickname(), "create")
+        );
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PutMapping
@@ -102,5 +113,40 @@ public class UsersController {
             @PathVariable UUID userId,
             @Valid @RequestBody UpdateSocialsDTO dto) {
         return ResponseEntity.ok(userService.updateSocials(userId, dto.getSocials()));
+    }
+
+    // Notification endpoints (перенесено из NotificationService)
+    @PutMapping("/{userId}/notification/telegram")
+    public ResponseEntity<Void> updateTelegramChatId(
+            @PathVariable String userId,
+            @RequestBody Map<String, String> body) {
+        notificationProducer.sendUpdateUserNotification(
+            new UpdateUserNotificationDTO(userId, "telegram", body.get("telegramChatId"))
+        );
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{userId}/notification/telegram-disable")
+    public ResponseEntity<Void> disableTelegramNotifications(@PathVariable String userId) {
+        notificationProducer.sendUpdateUserNotification(
+            new UpdateUserNotificationDTO(userId, "telegram-disable", null)
+        );
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{userId}/notification/email")
+    public ResponseEntity<Void> enableEmailNotifications(@PathVariable String userId) {
+        notificationProducer.sendUpdateUserNotification(
+            new UpdateUserNotificationDTO(userId, "email", null)
+        );
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{userId}/notification/email-disable")
+    public ResponseEntity<Void> disableEmailNotifications(@PathVariable String userId) {
+        notificationProducer.sendUpdateUserNotification(
+            new UpdateUserNotificationDTO(userId, "email-disable", null)
+        );
+        return ResponseEntity.ok().build();
     }
 }
